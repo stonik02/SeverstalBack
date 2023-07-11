@@ -1,5 +1,6 @@
-import { Injectable } from '@nestjs/common';
+import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import { Group } from '../group/model/group.model';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { User } from './model/user.model';
@@ -8,15 +9,24 @@ import { User } from './model/user.model';
 export class UserService {
   constructor(
     @InjectModel(User) private readonly userRepository: typeof User,
+    @InjectModel(Group) private readonly groupRepository: typeof Group,
   ) {}
 
-  getUserByUsername(username: string) {
-    return this.userRepository.findOne({ where: { username } });
+  getUserByName(name: string) {
+    return this.userRepository.findOne({ where: { name } });
   }
 
   async createUser(dto: CreateUserDTO): Promise<CreateUserDTO> {
-    const newUser = this.userRepository.create({ ...dto });
-    return newUser;
+    if (this.getUserByName(dto.name)) {
+      throw new BadRequestException('User with this name exist');
+    }
+    const group = this.groupRepository.findOne({ where: { name: dto.group } });
+    const newUser = this.userRepository.create({
+      name: dto.name,
+      group: group,
+    });
+
+    return dto;
   }
 
   async getAllUSers() {

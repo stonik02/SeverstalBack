@@ -3,6 +3,10 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { GroupModule } from '../group/group.module';
+import { Group } from '../group/model/group.model';
+import { Queue } from '../queue/model/queue.model';
+import { QueueModule } from '../queue/queue.module';
 import { User } from '../user/model/user.model';
 import { UserModule } from '../user/user.module';
 import { AppController } from './app.controller';
@@ -29,10 +33,12 @@ import { AppService } from './app.service';
         database: configService.get('POSTGRES_DATABASE'),
         synchronize: true,
         autoLoadModels: true,
-        models: [User],
+        models: [User, Queue, Group],
       }),
     }),
     UserModule,
+    GroupModule,
+    QueueModule,
   ],
   controllers: [AppController],
   providers: [AppService],
