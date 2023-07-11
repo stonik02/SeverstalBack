@@ -9,8 +9,8 @@ async function bootstrap() {
   const port = configService.get('port') || 3000;
 
   const config = new DocumentBuilder()
-    .setTitle('Store API')
-    .setDescription('Сайт нижнего белья')
+    .setTitle('API')
+    .setDescription('Severstal')
     .setVersion('1.0')
     .addTag('API')
     .build();
