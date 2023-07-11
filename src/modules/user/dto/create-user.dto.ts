@@ -10,7 +10,4 @@ export class CreateUserDTO {
   @IsString()
   group: string;
 
-  @ApiProperty()
-  @IsNumber()
-  position: number;
 }
