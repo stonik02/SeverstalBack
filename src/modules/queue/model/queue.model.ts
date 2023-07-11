@@ -11,6 +11,9 @@ import { User } from 'src/modules/user/model/user.model';
 @Table
 export class Queue extends Model {
 
+  @Column
+  name: string
+
   @ForeignKey(() => Group)
   @Column
   group: number;

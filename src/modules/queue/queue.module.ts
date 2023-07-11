@@ -8,6 +8,6 @@ import { QueueService } from './queue.service';
   imports: [SequelizeModule.forFeature([Queue])],
   providers: [QueueService],
   controllers: [QueueController],
-  exports: [QueueModule],
+  exports: [QueueModule, QueueService],
 })
 export class QueueModule {}

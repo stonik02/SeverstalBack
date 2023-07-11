@@ -4,27 +4,38 @@ import { Group } from '../group/model/group.model';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { User } from './model/user.model';
+import { QueueService } from '../queue/queue.service';
+import { GroupService } from '../group/group.service';
 
 @Injectable()
 export class UserService {
   constructor(
-    @InjectModel(User) private readonly userRepository: typeof User,
+    @InjectModel(User)  private readonly userRepository: typeof User,
     @InjectModel(Group) private readonly groupRepository: typeof Group,
+                        private readonly groupService: GroupService,
   ) {}
 
-  getUserByName(name: string) {
-    return this.userRepository.findOne({ where: { name } });
+  async getUserByName(name: string) {
+    return await this.userRepository.findOne({ where: { name } });
   }
 
   async createUser(dto: CreateUserDTO): Promise<CreateUserDTO> {
-    if (this.getUserByName(dto.name)) {
+    const validate = await this.getUserByName(dto.name)
+    if (validate) {
       throw new BadRequestException('User with this name exist');
     }
-    const group = this.groupRepository.findOne({ where: { name: dto.group } });
-    const newUser = this.userRepository.create({
-      name: dto.name,
-      group: group,
-    });
+    try {
+      const group = await this.groupService.getGroupByName(dto.group)
+      const newUser = await this.userRepository.create({
+          ...dto,
+          group: group.id,
+        });
+    }
+   catch(e) {
+    console.log(e)
+    throw new BadRequestException('Bad request')
+   }
+    
 
     return dto;
   }
