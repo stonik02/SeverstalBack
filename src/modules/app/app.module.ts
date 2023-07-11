@@ -29,7 +29,7 @@ import { AppService } from './app.service';
         host: configService.get('POSTGRES_HOST'),
         port: configService.get('DB_PORT'),
         username: configService.get('POSTGRES_USER'),
-        password: 'Qb*5x4dM',
+        password: configService.get('POSTGRES_PASSWORD'),
         database: configService.get('POSTGRES_DATABASE'),
         synchronize: true,
         autoLoadModels: true,

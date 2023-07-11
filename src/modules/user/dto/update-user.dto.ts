@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsString } from 'class-validator';
+import { IsNumber, IsString } from 'class-validator';
 
 export class UpdateUserDTO {
   @ApiProperty()
@@ -13,4 +13,8 @@ export class UpdateUserDTO {
   @ApiProperty()
   @IsString()
   group: string;
+
+  @ApiProperty()
+  @IsNumber()
+  position: number;
 }

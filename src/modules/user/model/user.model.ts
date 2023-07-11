@@ -21,6 +21,9 @@ export class User extends Model {
   end_time: string;
 
   @Column
+  position: number;
+
+  @Column
   unique_key: string;
 
   @Default(false)
