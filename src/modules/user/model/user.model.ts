@@ -1,6 +1,5 @@
 import {
   Column,
-  DataType,
   Default,
   ForeignKey,
   Model,
@@ -14,10 +13,10 @@ export class User extends Model {
   @Column
   name: string;
 
-  @Column(DataType.DATE)
+  @Column
   start_time: string;
 
-  @Column(DataType.DATE)
+  @Column
   end_time: string;
 
   @Column
