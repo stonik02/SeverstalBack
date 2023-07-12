@@ -3,6 +3,7 @@ import { ConfigModule, ConfigService } from '@nestjs/config';
 import { SequelizeModule } from '@nestjs/sequelize';
 import { ServeStaticModule } from '@nestjs/serve-static';
 import { join } from 'path';
+import { AuthModule } from '../auth/auth.module';
 import { GroupModule } from '../group/group.module';
 import { Group } from '../group/model/group.model';
 import { Queue } from '../queue/model/queue.model';
@@ -39,6 +40,7 @@ import { AppService } from './app.service';
     UserModule,
     GroupModule,
     QueueModule,
+    AuthModule,
   ],
   controllers: [AppController],
   providers: [AppService],

@@ -16,6 +16,6 @@ export class Group extends Model {
   @HasMany(() => User)
   users: User[];
 
-  @HasOne(() => Queue, 'group')
+  @HasOne(() => Queue, 'groupId')
   queue: Queue;
 }

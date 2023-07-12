@@ -1,7 +1,9 @@
 import { BadRequestException, Injectable } from '@nestjs/common';
 import { InjectModel } from '@nestjs/sequelize';
+import * as uuid from 'uuid';
 import { GroupService } from '../group/group.service';
 import { Group } from '../group/model/group.model';
+import { Queue } from '../queue/model/queue.model';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
 import { User } from './model/user.model';
@@ -11,11 +13,16 @@ export class UserService {
   constructor(
     @InjectModel(User) private readonly userRepository: typeof User,
     @InjectModel(Group) private readonly groupRepository: typeof Group,
+    @InjectModel(Queue) private readonly queueRepository: typeof Queue,
     private readonly groupService: GroupService,
   ) {}
 
   async getUserByName(name: string) {
-    return await this.userRepository.findOne({ where: { name } });
+    return await this.userRepository.findOne({ where: { name: name } });
+  }
+
+  uniqueKey() {
+    return uuid.v4();
   }
 
   async createUser(dto: CreateUserDTO): Promise<CreateUserDTO> {
@@ -24,12 +31,10 @@ export class UserService {
       throw new BadRequestException('User with this name exist');
     }
     try {
-      const newPosition = await this.getPosition(); // Это убрать впоследствии и заменить отдельной функцией если чел захочет встать в очередь
-      const group = await this.groupService.getGroupByName(dto.group);
+      const key = this.uniqueKey();
       const newUser = await this.userRepository.create({
         ...dto,
-        group: group.id,
-        position: newPosition,
+        unique_key: key,
       });
       this.dateForUsers(newUser);
     } catch (e) {
@@ -42,7 +47,7 @@ export class UserService {
 
   async getAllUSers() {
     return this.userRepository.findAll({
-      attributes: { exclude: ['password', 'createdAt', 'updatedAt'] },
+      attributes: { exclude: ['createdAt', 'updatedAt'] },
     });
   }
 
@@ -55,33 +60,53 @@ export class UserService {
     return this.userRepository.destroy({ where: { id } });
   }
 
-  async getPosition(): Promise<number> {
-    const user = await this.userRepository.findOne({
-      order: [['position', 'DESC']],
-    });
-    if (!user) {
-      return 1;
+  async getPosition(key): Promise<User> {
+    try {
+      const user = await this.userRepository.findOne({
+        where: { unique_key: key.key },
+        include: [Group],
+      });
+      var maxPosition: number = await this.userRepository.max('position');
+      console.log(maxPosition);
+      if (!maxPosition) {
+        user.position = 1;
+      } else {
+        user.position = maxPosition + 1;
+        console.log(maxPosition + 1);
+      }
+      user.queueId = user.groupId;
+      user.save();
+      return user;
+    } catch (e) {
+      console.log(e.message);
+      throw new BadRequestException('Wrong data');
     }
-    console.log(user.position);
-    return user.position + 1;
+  }
+
+  async exitFromQueue(dto): Promise<User> {
+    const user = await this.userRepository.findOne({
+      where: { unique_key: dto.key },
+    });
+    user.position = null;
+    user.queueId = null;
+    user.save();
+    return user;
   }
 
   async dateForUsers(user: User) {
     const now = new Date();
     const group = await this.groupRepository.findOne({
-      where: { id: user.group },
+      where: { id: user.groupId },
     });
+    console.log(`Группа ${user.groupId}`);
     let options: {
       year: 'numeric';
       month: 'long';
       day: 'numeric';
     };
-
     const start_time = new Intl.DateTimeFormat('en-US', options).format(now);
     now.setDate(now.getDate() + group.period);
     const end_time = new Intl.DateTimeFormat('en-US', options).format(now);
-    console.log(start_time);
-    console.log(end_time);
     user.start_time = start_time;
     user.end_time = end_time;
     user.save();

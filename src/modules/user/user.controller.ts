@@ -10,6 +10,7 @@ import {
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { CreateUserDTO } from './dto/create-user.dto';
 import { UpdateUserDTO } from './dto/update-user.dto';
+import { User } from './model/user.model';
 import { UserService } from './user.service';
 
 @ApiTags('Users')
@@ -39,5 +40,15 @@ export class UserController {
   @Delete(':id')
   deleteUser(@Param('id') id) {
     return this.userService.deleteUser(id);
+  }
+
+  @ApiResponse({ status: 200 })
+  @Post('addToQueue')
+  addToQueue(@Body() key: string): Promise<User> {
+    return this.userService.getPosition(key);
+  }
+  @Post('queueExit')
+  exitFromQueue(@Body() key: string): Promise<User> {
+    return this.userService.exitFromQueue(key);
   }
 }

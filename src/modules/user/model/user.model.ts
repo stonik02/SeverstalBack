@@ -1,4 +1,5 @@
 import {
+  BelongsTo,
   Column,
   Default,
   ForeignKey,
@@ -12,6 +13,9 @@ import { Queue } from 'src/modules/queue/model/queue.model';
 export class User extends Model {
   @Column
   name: string;
+
+  @Column
+  email: string;
 
   @Column
   start_time: string;
@@ -30,8 +34,16 @@ export class User extends Model {
   active: boolean;
 
   @ForeignKey(() => Group)
+  @Column
+  groupId: number;
+
+  @BelongsTo(() => Group)
   group: Group;
 
   @ForeignKey(() => Queue)
+  @Column
+  queueId: number;
+
+  @BelongsTo(() => Queue)
   queue: Queue;
 }

@@ -8,6 +8,10 @@ export class UpdateUserDTO {
 
   @ApiProperty()
   @IsString()
+  email: string;
+
+  @ApiProperty()
+  @IsString()
   active: boolean;
 
   @ApiProperty()
