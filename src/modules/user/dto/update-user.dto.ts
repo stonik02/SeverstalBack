@@ -1,5 +1,5 @@
 import { ApiProperty } from '@nestjs/swagger';
-import { IsNumber, IsString } from 'class-validator';
+import { IsBoolean, IsNumber, IsString } from 'class-validator';
 
 export class UpdateUserDTO {
   @ApiProperty()
@@ -21,4 +21,8 @@ export class UpdateUserDTO {
   @ApiProperty()
   @IsNumber()
   position: number;
+
+  @ApiProperty()
+  @IsBoolean()
+  is_superuser: boolean;
 }

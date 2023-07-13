@@ -51,6 +51,10 @@ export class UserService {
     });
   }
 
+  async getMe(key: string): Promise<User> {
+    return this.userRepository.findOne({ where: { unique_key: key } });
+  }
+
   async updateUser(id: string, dto: UpdateUserDTO): Promise<UpdateUserDTO> {
     const user = await this.userRepository.update(dto, { where: { id } });
     return dto;
@@ -67,12 +71,10 @@ export class UserService {
         include: [Group],
       });
       var maxPosition: number = await this.userRepository.max('position');
-      console.log(maxPosition);
       if (!maxPosition) {
         user.position = 1;
       } else {
         user.position = maxPosition + 1;
-        console.log(maxPosition + 1);
       }
       user.queueId = user.groupId;
       user.save();

@@ -14,3 +14,17 @@ export class CreateGroupDto {
   @IsNumber()
   seats: number;
 }
+
+export class UpdateGroupDto {
+  @ApiProperty()
+  @IsString()
+  name: string;
+
+  @ApiProperty()
+  @IsNumber()
+  period: number;
+
+  @ApiProperty()
+  @IsNumber()
+  seats: number;
+}

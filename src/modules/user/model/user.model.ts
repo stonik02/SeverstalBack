@@ -33,6 +33,10 @@ export class User extends Model {
   @Column
   active: boolean;
 
+  @Default(false)
+  @Column
+  is_superuser: boolean;
+
   @ForeignKey(() => Group)
   @Column
   groupId: number;

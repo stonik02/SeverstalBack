@@ -3,7 +3,7 @@ import { InjectModel } from '@nestjs/sequelize';
 import { Queue } from '../queue/model/queue.model';
 import { QueueService } from '../queue/queue.service';
 import { User } from '../user/model/user.model';
-import { CreateGroupDto } from './dto/group.dto';
+import { CreateGroupDto, UpdateGroupDto } from './dto/group.dto';
 import { Group } from './model/group.model';
 
 @Injectable()
@@ -32,5 +32,14 @@ export class GroupService {
       attributes: { exclude: ['createdAt', 'updatedAt'] },
       include: [User, Queue],
     });
+  }
+
+  async updateGroup(id: string, dto: UpdateGroupDto): Promise<UpdateGroupDto> {
+    const user = await this.groupRepository.update(dto, { where: { id } });
+    return dto;
+  }
+
+  async deleteGroup(id: number) {
+    return await this.groupRepository.destroy({ where: { id } });
   }
 }

@@ -1,4 +1,4 @@
-import { Controller, Get } from '@nestjs/common';
+import { Controller, Get, Param } from '@nestjs/common';
 import { ApiResponse, ApiTags } from '@nestjs/swagger';
 import { Queue } from './model/queue.model';
 import { QueueService } from './queue.service';
@@ -18,5 +18,11 @@ export class QueueController {
   @Get('g')
   checkActive() {
     return this.queueService.checkTimeActive();
+  }
+
+  @ApiResponse({ status: 201, type: Queue })
+  @Get(':groupId')
+  getPeriodsByGroupId(@Param('groupId') groupId: number) {
+    return this.queueService.getAllPeriods(groupId);
   }
 }

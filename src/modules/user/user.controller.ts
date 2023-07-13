@@ -18,6 +18,23 @@ import { UserService } from './user.service';
 export class UserController {
   constructor(private readonly userService: UserService) {}
 
+  @ApiResponse({ status: 200 })
+  @Post('addToQueue')
+  addToQueue(@Body() key: string): Promise<User> {
+    return this.userService.getPosition(key);
+  }
+  @Post('queueExit')
+  exitFromQueue(@Body() key: string): Promise<User> {
+    return this.userService.exitFromQueue(key);
+  }
+
+  @Post('me')
+  getMe(@Body() key: string): Promise<User> {
+    return this.userService.exitFromQueue(key);
+  }
+
+  // ------------------------------------------------------
+  //                    ADMIN
   @ApiResponse({ status: 201, type: CreateUserDTO })
   @Post('')
   createUser(@Body() dto: CreateUserDTO): Promise<CreateUserDTO> {
@@ -40,15 +57,5 @@ export class UserController {
   @Delete(':id')
   deleteUser(@Param('id') id) {
     return this.userService.deleteUser(id);
-  }
-
-  @ApiResponse({ status: 200 })
-  @Post('addToQueue')
-  addToQueue(@Body() key: string): Promise<User> {
-    return this.userService.getPosition(key);
-  }
-  @Post('queueExit')
-  exitFromQueue(@Body() key: string): Promise<User> {
-    return this.userService.exitFromQueue(key);
   }
 }
