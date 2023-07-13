@@ -181,9 +181,11 @@ export class QueueService {
     } else {
       countPeriodFront = Math.ceil(countPersonFront / seats);
     }
-    console.log(`Активный Юзер: ${user.id}`);
+    console.log(`Активный Юзер: ${user.id},${user.id},${user.id},${user.id}`);
     console.log(`Кол-во людей впереди: ${countPersonFront}`);
-    console.log(`Кол-во периодов впереди: ${countPeriodFront}`);
+    console.log(
+      `Кол-во периодов впереди: ${countPeriodFront},${countPeriodFront},${countPeriodFront},${countPeriodFront},${countPeriodFront},${countPeriodFront}`,
+    );
   }
 
   async getNextPeriodForNoActiveUser(
@@ -199,28 +201,41 @@ export class QueueService {
     let countPersonBack = 0;
     // Если сзади есть активный юзер
     if (activeUserMaxPosition.position < user.position) {
-      if (users[queueLength - 1].active && users[0].active) {
-      } else {
-        countPersonFront = user.position - activeUserMaxPosition.position - 1;
-      }
-      if (countPersonFront % seats === 0) {
-        countPeriodFront = countPersonFront / seats + 1;
-      } else {
-        countPeriodFront = Math.ceil(countPersonFront / seats);
-      }
+      console.log(
+        `Не Активный Юзер: ${user.id},${user.id},${user.id},${user.id}`,
+      );
+
       // Иначе
     } else {
       countPersonFront = queueLength - activeUserMaxPosition.position;
       countPersonBack = user.position - 1;
       countPersonFront += countPersonBack;
-      if (countPersonFront % seats === 0) {
-        countPeriodFront = countPersonFront / seats + 1;
-      } else {
-        countPeriodFront = Math.ceil(countPersonFront / seats);
-      }
-      console.log(`Не Активный Юзер: ${user.id}`);
-      console.log(`Кол-во людей впереди: ${countPersonFront}`);
-      console.log(`Кол-во периодов впереди: ${countPeriodFront}`);
+      console.log(
+        `Не Активный Юзер: ${user.id},${user.id},${user.id},${user.id}`,
+      );
     }
+    let count = 0;
+    if (users[queueLength - 1].active && users[0].active) {
+      for (const user3 of users) {
+        if (user3.active) {
+          count++;
+        } else {
+          break;
+        }
+      }
+      // countPersonFront - count;
+    }
+    countPersonFront - count;
+
+    if (countPersonFront % seats === 0) {
+      countPeriodFront = countPersonFront / seats + 1;
+    } else {
+      countPeriodFront = Math.ceil(countPersonFront / seats);
+    }
+
+    console.log(`Кол-во людей впереди: ${countPersonFront}`);
+    console.log(
+      `Кол-во периодов впереди: ${countPeriodFront},${countPeriodFront},${countPeriodFront},${countPeriodFront},${countPeriodFront}`,
+    );
   }
 }

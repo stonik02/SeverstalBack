@@ -12,10 +12,14 @@ export class AuthService {
   ) {}
 
   async auth(dto: AuthDto): Promise<User> {
-    const user = await this.userService.getUserByName(dto.name);
-    if (dto.unique_key == user.unique_key) {
-      return user;
-    } else {
+    try {
+      const user = await this.userService.getUserByName(dto.name);
+      if (dto.unique_key == user.unique_key) {
+        return user;
+      } else {
+        throw new BadRequestException('Wrong data');
+      }
+    } catch (e) {
       throw new BadRequestException('Wrong data');
     }
   }
